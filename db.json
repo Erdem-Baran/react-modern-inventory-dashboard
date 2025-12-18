@@ -1,0 +1,8 @@
+{
+  "users": [],
+  "products": [
+    { "id": 1, "name": "Laptop", "price": 15000, "stock": 5, "category": "Electronics" },
+    { "id": 2, "name": "Mouse", "price": 500, "stock": 20, "category": "Electronics" }
+  ],
+  "orders": []
+}
