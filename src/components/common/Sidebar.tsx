@@ -6,7 +6,6 @@ import {
   Users,
   Settings,
   LogOut,
-  User,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 
@@ -37,7 +36,7 @@ export default function Sidebar() {
                   cn(
                     "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors",
                     isActive
-                      ? "bg-blue-500 text-blue-600"
+                      ? "bg-blue-300 text-blue-900"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   )
                 }
@@ -52,7 +51,7 @@ export default function Sidebar() {
 
       {/* Lower Section - Exit */}
       <div className="p-4 border-t border-gray-200">
-        <button className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+        <button className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer">
           <LogOut className="w-5 h-5" />
           Logout
         </button>
