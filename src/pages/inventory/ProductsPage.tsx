@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   createColumnHelper,
@@ -9,9 +9,10 @@ import {
   getFilteredRowModel,
   type SortingState,
 } from "@tanstack/react-table";
-import { getProducts } from "../../api/productApi";
+import { getProducts, addProduct } from "../../api/productApi";
 import type { Product } from "../../types/product";
-import { Loader2, AlertCircle, ArrowUpDown, Search } from "lucide-react";
+import { Loader2, AlertCircle, ArrowUpDown, Search, Plus } from "lucide-react";
+import AddProductModal from "./AddProductModal";
 
 // Defining Table Columns
 const columnHelper = createColumnHelper<Product>();
@@ -81,6 +82,10 @@ const columns = [
 export default function ProductsPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const queryClient = useQueryClient();
+
   // 1. Pulling Data with React Query
   const {
     data: products = [],
@@ -89,6 +94,15 @@ export default function ProductsPage() {
   } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
+  });
+
+  // Add Data
+  const addProductMutation = useMutation({
+    mutationFn: addProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      setIsModalOpen(false);
+    },
   });
 
   // 2. creating the table
@@ -138,8 +152,9 @@ export default function ProductsPage() {
             You can manage your products here.
           </p>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-          + New Product
+        <button
+        onClick={() => setIsModalOpen(true)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          <Plus className="w-5 h-5" /> New Product
         </button>
       </div>
 
@@ -193,6 +208,18 @@ export default function ProductsPage() {
             No products have been added yet.
           </div>
         )}
+        {/* MODAL */}
+      <AddProductModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={(data: any) => {
+          addProductMutation.mutate({
+            ...data,
+            lastUpdated: new Date().toISOString().split('T')[0]
+          });
+        }}
+        isSubmitting={addProductMutation.isPending}
+      />
       </div>
     </div>
   );
