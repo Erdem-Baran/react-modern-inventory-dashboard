@@ -7,7 +7,8 @@
       "price": 1500,
       "stock": 5,
       "category": "Electronics",
-      "status": "Low Stock"
+      "status": "Low Stock",
+      "lastUpdated": "2025-12-22"
     },
     {
       "id": "2",
@@ -15,7 +16,8 @@
       "price": 500,
       "stock": 20,
       "category": "Electronics",
-      "status": "In Stock"
+      "status": "In Stock",
+      "lastUpdated": "2025-12-22"
     },
     {
       "id": "3",
@@ -23,7 +25,8 @@
       "price": 100,
       "stock": 0,
       "category": "Electronics",
-      "status": "Out of Stock"
+      "status": "Out of Stock",
+      "lastUpdated": "2025-12-22"
     },
     {
       "id": "8e7e",
@@ -31,6 +34,24 @@
       "category": "electronics",
       "price": 400,
       "stock": 17,
+      "status": "In Stock",
+      "lastUpdated": "2025-12-22"
+    },
+    {
+      "id": "6959",
+      "name": "headphones",
+      "category": "electronics",
+      "price": 25,
+      "stock": 70,
+      "status": "In Stock",
+      "lastUpdated": "2025-12-22"
+    },
+    {
+      "id": "b6c4",
+      "name": "monitor",
+      "category": "electronics",
+      "price": 600,
+      "stock": 11,
       "status": "In Stock",
       "lastUpdated": "2025-12-22"
     }
