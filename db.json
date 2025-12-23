@@ -27,33 +27,6 @@
       "category": "Electronics",
       "status": "Out of Stock",
       "lastUpdated": "2025-12-22"
-    },
-    {
-      "id": "8e7e",
-      "name": "phone",
-      "category": "electronics",
-      "price": 400,
-      "stock": 17,
-      "status": "In Stock",
-      "lastUpdated": "2025-12-22"
-    },
-    {
-      "id": "6959",
-      "name": "headphones",
-      "category": "electronics",
-      "price": 25,
-      "stock": 70,
-      "status": "In Stock",
-      "lastUpdated": "2025-12-22"
-    },
-    {
-      "id": "b6c4",
-      "name": "monitor",
-      "category": "electronics",
-      "price": 600,
-      "stock": 11,
-      "status": "In Stock",
-      "lastUpdated": "2025-12-22"
     }
   ],
   "orders": []

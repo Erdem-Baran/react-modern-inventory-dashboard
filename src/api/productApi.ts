@@ -11,3 +11,6 @@ export const addProduct = async (
   const response = await axiosClient.post<Product>("/products", newProduct);
   return response.data;
 };
+export const deleteProduct = async(id: number): Promise<void> => {
+  await axiosClient.delete(`/products/${id}`)
+}

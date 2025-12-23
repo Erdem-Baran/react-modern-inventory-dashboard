@@ -9,9 +9,17 @@ import {
   getFilteredRowModel,
   type SortingState,
 } from "@tanstack/react-table";
-import { getProducts, addProduct } from "../../api/productApi";
+import { getProducts, addProduct, deleteProduct } from "../../api/productApi";
 import type { Product } from "../../types/product";
-import { Loader2, AlertCircle, ArrowUpDown, Search, Plus } from "lucide-react";
+import {
+  Loader2,
+  AlertCircle,
+  ArrowUpDown,
+  Search,
+  Plus,
+  Trash2,
+  Edit,
+} from "lucide-react";
 import AddProductModal from "../../components/inventory/AddProductModal";
 
 // Defining Table Columns
@@ -77,6 +85,29 @@ const columns = [
       );
     },
   }),
+  columnHelper.display({
+    id: "actions",
+    header: "Processes",
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <button
+            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            title="Edit"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+          <button
+            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors delete-btn"
+            data-id={row.original.id}
+            title="Delete"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      );
+    },
+  }),
 ];
 
 export default function ProductsPage() {
@@ -120,6 +151,21 @@ export default function ProductsPage() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  // DELETION MUTATION
+  const deleteMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
+  // Delete Function
+  const handleDelete = (id: number) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
   // Loading Status
   if (isLoading) {
     return (
@@ -153,7 +199,9 @@ export default function ProductsPage() {
           </p>
         </div>
         <button
-        onClick={() => setIsModalOpen(true)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
           <Plus className="w-5 h-5" /> New Product
         </button>
       </div>
@@ -193,11 +241,47 @@ export default function ProductsPage() {
           <tbody className="divide-y divide-gray-200">
             {table.getRowModel().rows.map((row) => (
               <tr key={row.id} className="hover:bg-gray-50 transition-colors">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-6 py-4 text-sm text-gray-700">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
+                {row.getVisibleCells().map((cell) => {
+                  if (cell.column.id === "actions") {
+                    return (
+                      <td
+                        key={cell.id}
+                        className="px-6 py-4 text-sm text-gray-700"
+                      >
+                        <div className="flex items-center gap-2">
+                          {/* EDIT BUTTON */}
+                          <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <Edit className="w-4 h-4" />
+                          </button>
+
+                          {/* DELETE BUTTON */}
+                          <button
+                            onClick={() => handleDelete(row.original.id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            {deleteMutation.isPending &&
+                            deleteMutation.variables === row.original.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    );
+                  }
+                  return (
+                    <td
+                      key={cell.id}
+                      className="px-6 py-4 text-sm text-gray-700"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
@@ -209,17 +293,17 @@ export default function ProductsPage() {
           </div>
         )}
         {/* MODAL */}
-      <AddProductModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={(data: any) => {
-          addProductMutation.mutate({
-            ...data,
-            lastUpdated: new Date().toISOString().split('T')[0]
-          });
-        }}
-        isSubmitting={addProductMutation.isPending}
-      />
+        <AddProductModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={(data: any) => {
+            addProductMutation.mutate({
+              ...data,
+              lastUpdated: new Date().toISOString().split("T")[0],
+            });
+          }}
+          isSubmitting={addProductMutation.isPending}
+        />
       </div>
     </div>
   );
