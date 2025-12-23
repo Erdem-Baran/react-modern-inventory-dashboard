@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { X, Loader2 } from "lucide-react";
 import { useEffect } from "react";
+import type { Product } from "../../types/product";
 
 //  Validation Scheme
 const productSchema = z.object({
@@ -23,6 +24,7 @@ interface AddProductModalProps {
   onClose: () => void;
   onSubmit: (data: ProductFormData) => void;
   isSubmitting: boolean;
+  initialData?: Product | null;
 }
 
 export default function AddProductModal({
@@ -30,6 +32,7 @@ export default function AddProductModal({
   onClose,
   onSubmit,
   isSubmitting,
+  initialData,
 }: AddProductModalProps) {
   const {
     register,
@@ -45,9 +48,25 @@ export default function AddProductModal({
 
   useEffect(() => {
     if (!isOpen) {
-      reset();
+      if(initialData){
+        reset({
+          name: initialData.name,
+          category: initialData.category,
+          price: initialData.price,
+          stock: initialData.stock,
+          status: initialData.status
+        })
+      }else{
+        reset({
+          name: "",
+          category: "",
+          price: 0,
+          stock: 0,
+          status: "In Stock",
+        });
+      }
     }
-  }, [isOpen, reset]);
+  }, [isOpen, reset, initialData]);
 
   if (!isOpen) return null;
 
@@ -59,7 +78,7 @@ export default function AddProductModal({
         {/* Title */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
           <h2 className="text-lg font-semibold text-gray-900">
-            Add New Product
+            {initialData ? "Edit Product" : "Add New Product"}
           </h2>
           <button
             onClick={onClose}

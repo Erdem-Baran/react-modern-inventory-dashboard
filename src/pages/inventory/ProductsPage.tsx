@@ -9,7 +9,12 @@ import {
   getFilteredRowModel,
   type SortingState,
 } from "@tanstack/react-table";
-import { getProducts, addProduct, deleteProduct } from "../../api/productApi";
+import {
+  getProducts,
+  addProduct,
+  deleteProduct,
+  updateProduct,
+} from "../../api/productApi";
 import type { Product } from "../../types/product";
 import {
   Loader2,
@@ -88,25 +93,6 @@ const columns = [
   columnHelper.display({
     id: "actions",
     header: "Processes",
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <button
-            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-            title="Edit"
-          >
-            <Edit className="w-4 h-4" />
-          </button>
-          <button
-            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors delete-btn"
-            data-id={row.original.id}
-            title="Delete"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      );
-    },
   }),
 ];
 
@@ -114,8 +100,8 @@ export default function ProductsPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const queryClient = useQueryClient();
+  const [editingProduct, seteditingProduct] = useState<Product | null>(null);
 
   // 1. Pulling Data with React Query
   const {
@@ -133,8 +119,47 @@ export default function ProductsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setIsModalOpen(false);
+      handleCloseModal();
     },
   });
+
+  // Update Data
+  const updateProductMutation = useMutation({
+    mutationFn: updateProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      handleCloseModal();
+    },
+  });
+
+  // DELETION MUTATION
+  const deleteMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
+  // --- HANDLERS (Event Management) ---
+
+  // Function that cleans everything when the modal closes
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    seteditingProduct(null);
+  };
+
+  // Will run when the Edit button is clicked
+  const handleEdit = (product: Product) => {
+    seteditingProduct(product);
+    setIsModalOpen(true);
+  };
+
+  // Will work when the delete button is pressed
+  const handleDelete = (id: number) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   // 2. creating the table
   const table = useReactTable({
@@ -150,21 +175,6 @@ export default function ProductsPage() {
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
   });
-
-  // DELETION MUTATION
-  const deleteMutation = useMutation({
-    mutationFn: deleteProduct,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-    },
-  });
-
-  // Delete Function
-  const handleDelete = (id: number) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      deleteMutation.mutate(id);
-    }
-  };
 
   // Loading Status
   if (isLoading) {
@@ -249,15 +259,19 @@ export default function ProductsPage() {
                         className="px-6 py-4 text-sm text-gray-700"
                       >
                         <div className="flex items-center gap-2">
-                          {/* EDIT BUTTON */}
-                          <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                          {/* Edit Button */}
+                          <button
+                            onClick={() => handleEdit(row.original)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit"
+                          >
                             <Edit className="w-4 h-4" />
                           </button>
-
-                          {/* DELETE BUTTON */}
+                          {/* Delete Button */}
                           <button
                             onClick={() => handleDelete(row.original.id)}
                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete"
                           >
                             {deleteMutation.isPending &&
                             deleteMutation.variables === row.original.id ? (
@@ -295,14 +309,21 @@ export default function ProductsPage() {
         {/* MODAL */}
         <AddProductModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
+          initialData={editingProduct}
           onSubmit={(data: any) => {
-            addProductMutation.mutate({
-              ...data,
-              lastUpdated: new Date().toISOString().split("T")[0],
-            });
+            if (editingProduct) {
+              updateProductMutation.mutate({ ...editingProduct, ...data });
+            } else {
+              addProductMutation.mutate({
+                ...data,
+                lastUpdated: new Date().toISOString().split("T")[0],
+              });
+            }
           }}
-          isSubmitting={addProductMutation.isPending}
+          isSubmitting={
+            addProductMutation.isPending || updateProductMutation.isPending
+          }
         />
       </div>
     </div>

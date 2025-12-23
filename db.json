@@ -3,10 +3,10 @@
   "products": [
     {
       "id": "1",
-      "name": "Laptop",
-      "price": 1500,
-      "stock": 5,
-      "category": "Electronics",
+      "name": "headphones",
+      "price": 15,
+      "stock": 21,
+      "category": "electronics",
       "status": "Low Stock",
       "lastUpdated": "2025-12-22"
     },
