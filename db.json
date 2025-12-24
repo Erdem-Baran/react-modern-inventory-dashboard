@@ -27,6 +27,15 @@
       "category": "Electronics",
       "status": "Out of Stock",
       "lastUpdated": "2025-12-22"
+    },
+    {
+      "id": "d298",
+      "name": "game",
+      "category": "digital",
+      "price": 12,
+      "stock": 89,
+      "status": "In Stock",
+      "lastUpdated": "2025-12-24"
     }
   ],
   "orders": []
