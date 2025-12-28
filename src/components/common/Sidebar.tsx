@@ -1,95 +1,76 @@
+import { LayoutDashboard, Package, ShoppingCart, Users, FileBarChart, Settings, LogOut, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
-  Settings,
-  LogOut,
-  X,
-  FileArchive,
-} from "lucide-react";
-import { cn } from "../../lib/utils";
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-  { icon: Package, label: "Inventory", href: "/inventory" },
-  { icon: ShoppingCart, label: "Orders", href: "/orders" },
-  { icon: Users, label: "Customers", href: "/customers" },
-  { icon: FileArchive, label: "Reports", href: "/reports" },
-  { icon: Settings, label: "Settings", href: "/settings" },
-];
-
-// Props tip definition (for TypeScript)
 interface SidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;     
+  onClose?: () => void; 
 }
 
-export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
+  const menuItems = [
+    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+    { icon: Package, label: "Inventory", path: "/inventory" },
+    { icon: ShoppingCart, label: "Orders", path: "/orders" },
+    { icon: Users, label: "Customers", path: "/customers" },
+    { icon: FileBarChart, label: "Reports", path: "/reports" },
+    { icon: Settings, label: "Settings", path: "/settings" },
+  ];
+
   return (
     <>
-      {/* BACKGROUND DARKENING FOR MOBILE (OVERLAY) */}
-      {/* Only visible on mobile and when the menu is open. Clicking closes the menu. */}
-      <div
-        className={cn(
-          "fixed inset-0 z-40 bg-black/50 transition-opacity md:hidden",
-          isOpen ? "opacity-100 block" : "opacity-0 hidden pointer-events-none"
-        )}
+      <div 
+        className={`fixed inset-0 bg-black/50 z-20 lg:hidden transition-opacity duration-200 ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
         onClick={onClose}
       />
 
-      {/* SIDEBAR */}
-      <aside
-        className={cn(
-          // Basic styles + Fixed position for mobile + Sliding effect
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out flex flex-col h-full",
-          // Always visible on the desktop (md) and takes up space (relative)
-          "md:relative md:translate-x-0",
-          // Slides in or out depending on the situation on mobile
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        )}
+      <aside 
+        className={`
+          fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 
+          flex flex-col transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} 
+        `}
       >
-        {/* Logo Section */}
-        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-blue-600">NexStock</h1>
-          {/* Close button in the top right corner on mobile */}
-          <button
-            onClick={onClose}
-            className="md:hidden p-1 text-gray-500 hover:bg-gray-100 rounded-lg"
+        <div className="p-6 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
+            <span className="p-1 bg-blue-600 text-white rounded-lg">NS</span>
+            <span className="text-gray-900 dark:text-white">NexStock</span>
+          </h1>
+
+          {/* Close Button on Mobile (X Icon) */}
+          <button 
+            onClick={onClose} 
+            className="lg:hidden p-1 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
-        {/* Menu Links */}
-        <nav className="flex-1 overflow-y-auto py-4">
-          <ul className="space-y-1 px-3">
-            {sidebarItems.map((item) => (
-              <li key={item.href}>
-                <NavLink
-                  to={item.href}
-                  onClick={onClose} // Close the menu on mobile when you click the link
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg transition-colors",
-                      isActive
-                        ? "bg-blue-50 text-blue-600"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    )
-                  }
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+        {/* MENÜ LİNKLERİ */}
+        <nav className="flex-1 px-4 space-y-2">
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-xl transition-colors font-medium ${
+                  isActive
+                    ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                }`
+              }
+            >
+              <item.icon className="w-5 h-5" />
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
-        {/* Lower Section - Exit */}
-        <div className="p-4 border-t border-gray-200">
-          <button className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer">
+        {/* EXIT BUTTON */}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+          <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors font-medium">
             <LogOut className="w-5 h-5" />
             Logout
           </button>

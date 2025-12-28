@@ -5,7 +5,7 @@ import Header from '../components/common/Header';
 
 export default function DashboardLayout() {
   // State that controls whether the sidebar is open or closed
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // On/Off functions for the sidebar
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
