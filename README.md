@@ -68,3 +68,8 @@ src/
 └── App.tsx         # Main application entry
 
 ```
+
+
+
+
+"This project uses json-server for demonstration purposes. In a real-world production environment, strict authentication (JWT), server-side validation, and role-based access control (RBAC) would be implemented on a robust backend (like Node.js/Express, .NET or Go)."
