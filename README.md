@@ -3,7 +3,6 @@
 A comprehensive, responsive, and modern inventory management dashboard built with **React**, **TypeScript**, and **Tailwind CSS**. This application helps businesses track products, manage orders, and analyze customers with an intuitive user interface and interactive data visualization.
 
 ![Project Preview](public/project.png)
-*(You can replace this link with an actual screenshot of your dashboard later)*
 
 ## ✨ Features
 
