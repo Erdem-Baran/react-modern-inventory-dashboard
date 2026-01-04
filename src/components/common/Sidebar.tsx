@@ -9,13 +9,20 @@ import {
   X,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useOnClickOutside } from "../../hooks/useClickOutside";
 
 interface SidebarProps {
-  isOpen?: boolean;
-  onClose?: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const sidebarRef = useOnClickOutside(() => {
+    if (isOpen) {
+      onClose();
+    }
+  });
+
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: Package, label: "Inventory", path: "/inventory" },
@@ -35,6 +42,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
       />
 
       <aside
+        ref={sidebarRef}
         className={`
           fixed lg:static inset-y-0 left-0 z-30 w-64 bg-blue-100 dark:bg-gray-900 border-r border-gray-300 dark:border-gray-800 
           flex flex-col transition-transform duration-300 ease-in-out

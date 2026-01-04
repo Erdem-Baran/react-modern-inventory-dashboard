@@ -82,7 +82,11 @@ const columns = [
   }),
   columnHelper.accessor("joinDate", {
     header: "Join Date",
-    cell: (info) => <span className="text-gray-500 dark:text-gray-200">{info.getValue()}</span>,
+    cell: (info) => (
+      <span className="text-gray-500 dark:text-gray-200">
+        {info.getValue()}
+      </span>
+    ),
   }),
   columnHelper.display({
     id: "actions",
@@ -132,7 +136,9 @@ export default function CustomersPage() {
     <div className="p-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">Customers</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">
+            Customers
+          </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
             Manage your customer database and spending history.
           </p>
@@ -173,9 +179,15 @@ export default function CustomersPage() {
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <tr
+                key={row.id}
+                className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-6 py-4 text-sm text-gray-700 dark:text-gray-200">
+                  <td
+                    key={cell.id}
+                    className="px-6 py-4 text-sm text-gray-700 dark:text-gray-200"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
