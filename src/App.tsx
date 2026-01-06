@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store/store";
 import DashboardLayout from "./layouts/DashboardLayout";
-import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import ReportsPage from "./pages/reports/ReportsPage";
 import OrderListPage from "./pages/orders/OrderListPage";
@@ -25,20 +25,20 @@ function App() {
     }
   }, [theme]);
   return (
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<DashboardLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="inventory" element={<ProductsPage />} />
-            <Route path="reports" element={<ReportsPage />} />
-            <Route path="orders" element={<OrderListPage />} />
-            <Route path="customers" element={<CustomersPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-          </Route>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<DashboardLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="inventory" element={<ProductsPage />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="orders" element={<OrderListPage />} />
+          <Route path="customers" element={<CustomersPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
+      </Route>
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
   );
 }
 
